@@ -73,7 +73,8 @@ module APN
           # Note that RAILS_ROOT is still here not from Rails, but to handle passing in root from sender_daemon
           @opts[:root_path] ||= defined?(::Rails.root) ? ::Rails.root.to_s : (defined?(RAILS_ROOT) ? RAILS_ROOT : '/')
           @opts[:cert_path] ||= File.join(File.expand_path(@opts[:root_path]), "config", "certs")
-          @opts[:cert_name] ||= apn_production? ? "apn_production.pem" : "apn_development.pem"
+          @opts[:cert_name] ||= @opts[:pro] ? "apn_pro_production.pem" : "apn_production.pem"
+          puts "Using cert: #{@opts[:cert_name]}"
 
           File.join(@opts[:cert_path], @opts[:cert_name])
         end
