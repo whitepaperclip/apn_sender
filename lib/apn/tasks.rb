@@ -8,19 +8,11 @@ namespace :apn do
   task :sender => :setup do
     require 'apn'
 
-    worker = APN::Sender.new(:full_cert_path => ENV['FULL_CERT_PATH'], :cert_path => ENV['CERT_PATH'], :environment => ENV['ENVIRONMENT'], :cert_pass => ENV['CERT_PASS'])
+    worker = APN::Sender.new(:full_cert_path => ENV['FULL_CERT_PATH'], :cert_path => ENV['CERT_PATH'], :environment => ENV['ENVIRONMENT'], :cert_pass => ENV['CERT_PASS'], :pro => ENV['PRO'])
     worker.verbose = ENV['LOGGING'] || ENV['VERBOSE']
     worker.very_verbose = ENV['VVERBOSE']
 
     worker.work(ENV['INTERVAL'] || 5) # interval, will block
-
-    puts "*** Starting worker to send apple notifications in the background from #{worker}"
-
-    pro_worker = APN::Sender.new(:full_cert_path => ENV['FULL_CERT_PATH'], :cert_path => ENV['CERT_PATH'], :environment => ENV['ENVIRONMENT'], :cert_pass => ENV['CERT_PASS'], :pro => true)
-    pro_worker.verbose = ENV['LOGGING'] || ENV['VERBOSE']
-    pro_worker.very_verbose = ENV['VVERBOSE']
-
-    pro_worker.work(ENV['INTERVAL'] || 5) # interval, will block
 
     puts "*** Starting worker to send apple notifications in the background from #{worker}"
   end
@@ -29,9 +21,9 @@ namespace :apn do
   task :senders do
     threads = []
 
-    ENV['COUNT'].to_i.times do
+    2.times do |n|
       threads << Thread.new do
-        system "rake apn:work"
+        system "rake apn:work#{n == 1 ? ' PRO=true' : ''}"
       end
     end
 
