@@ -16,7 +16,8 @@ module APN
         log(:info, "APN::Sender initializing. Establishing connections first...") if @opts[:verbose]
         setup_paths
 
-        super( APN::QUEUE_NAME ) if self.class.ancestors.include?(Resque::Worker)
+        puts "Queue name: #{APN.queue_name}"
+        super( APN.queue_name ) if self.class.ancestors.include?(Resque::Worker)
       end
       
       # Lazy-connect the socket once we try to access it in some way
@@ -77,6 +78,10 @@ module APN
           puts "Using cert: #{@opts[:cert_name]}"
 
           File.join(@opts[:cert_path], @opts[:cert_name])
+        end
+
+        if @opts[:queue_name]
+          APN.queue_name = @opts[:queue_name]
         end
         
         @apn_cert = File.read(cert_path) if File.exists?(cert_path)
