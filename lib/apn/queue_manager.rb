@@ -6,7 +6,13 @@ module APN
   # Enqueues a notification to be sent in the background via the persistent TCP socket, assuming apn_sender is running (or will be soon)
   def self.notify(token, opts = {})
     token = token.to_s.gsub(/\W/, '')
-    APN::QueueManager.enqueue(APN::NotificationJob, token, opts)
+    if opts[:pro]
+      APN::QueueManager.enqueue(APN::NotificationJobPro, token, opts)
+      puts "Enqueuing NotificationJobPro: #{opts.inspect}"
+    else
+      APN::QueueManager.enqueue(APN::NotificationJob, token, opts)
+      puts "Enqueuing NotificationJob: #{opts.inspect}"
+    end
   end  
   
   # Extends Resque, allowing us to add all the callbacks to Resque we desire without affecting the expected
