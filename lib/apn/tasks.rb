@@ -12,6 +12,8 @@ namespace :apn do
     worker.verbose = ENV['LOGGING'] || ENV['VERBOSE']
     worker.very_verbose = ENV['VVERBOSE']
 
+    worker.work(ENV['INTERVAL'] || 5) # interval, will block
+
     puts "*** Starting worker to send apple notifications in the background from #{worker}"
 
     pro_worker = APN::Sender.new(:full_cert_path => ENV['FULL_CERT_PATH'], :cert_path => ENV['CERT_PATH'], :environment => ENV['ENVIRONMENT'], :cert_pass => ENV['CERT_PASS'], :pro => true)
@@ -19,6 +21,8 @@ namespace :apn do
     pro_worker.very_verbose = ENV['VVERBOSE']
 
     pro_worker.work(ENV['INTERVAL'] || 5) # interval, will block
+
+    puts "*** Starting worker to send apple notifications in the background from #{worker}"
   end
 
   desc "Start multiple APN workers. Should only be used in dev mode."
