@@ -3,11 +3,14 @@ module APN
   # It gets added to the +apple_server_notifications+ Resque queue, which should only be operated on by
   # workers of the +APN::Sender+ class.
   class NotificationJob
-    # Behind the scenes, this is the name of our Resque queue
-    @queue = APN.queue_name
-
     # Build a notification from arguments and send to Apple
     def self.perform(token, opts)
+      if opts[:pro]
+        @queue = :apple_push_notifications_pro
+      else
+        @queue = :apple_push_notifications
+      end
+      puts "APN::NotificationJob @queue: #{@queue}"
       msg = APN::Notification.new(token, opts)
       raise "Invalid notification options (did you provide :alert, :badge, or :sound?): #{opts.inspect}" unless msg.valid?
 
