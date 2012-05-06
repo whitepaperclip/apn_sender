@@ -23,7 +23,7 @@ namespace :apn do
 
     2.times do |n|
       threads << Thread.new do
-        system "rake apn:work#{n == 1 ? ' PRO=true QUEUE_NAME=pro' : ''}"
+        system "rake apn:work#{n == 1 ? ' PRO=true' : ''}"
       end
     end
 

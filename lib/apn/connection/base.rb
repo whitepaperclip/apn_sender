@@ -16,6 +16,10 @@ module APN
         log(:info, "APN::Sender initializing. Establishing connections first...") if @opts[:verbose]
         setup_paths
 
+        if @opts[:pro]
+          APN.queue_name = :apple_push_notifications_pro
+        end
+
         puts "Queue name: #{APN.queue_name}"
         super( APN.queue_name ) if self.class.ancestors.include?(Resque::Worker)
       end
@@ -78,10 +82,6 @@ module APN
           puts "Using cert: #{@opts[:cert_name]}"
 
           File.join(@opts[:cert_path], @opts[:cert_name])
-        end
-
-        if @opts[:queue_name]
-          APN.queue_name = @opts[:queue_name]
         end
         
         @apn_cert = File.read(cert_path) if File.exists?(cert_path)
