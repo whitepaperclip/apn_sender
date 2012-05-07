@@ -7,11 +7,11 @@ module APN
   def self.notify(token, opts = {})
     token = token.to_s.gsub(/\W/, '')
     if opts[:pro]
-      APN::QueueManager.enqueue(APN::ProNotificationJob, token, opts)
       puts "Enqueuing ProNotificationJob: #{opts.inspect}"
+      APN::QueueManager.enqueue(APN::ProNotificationJob, token, opts)
     else
-      APN::QueueManager.enqueue(APN::NotificationJob, token, opts)
       puts "Enqueuing NotificationJob: #{opts.inspect}"
+      APN::QueueManager.enqueue(APN::NotificationJob, token, opts)
     end
   end  
   
